@@ -1,0 +1,22 @@
+# utm.airat.top
+
+Summary:
+UTM.airat.top is a static, privacy-first UTM generator for building campaign URLs. Everything runs locally in the browser.
+
+Primary URL:
+https://utm.airat.top
+
+Key features:
+- Builds full URLs with utm_source, utm_medium, utm_campaign, utm_term, and utm_content.
+- Optional preservation of existing query parameters.
+- One-click copy for full URLs or only UTM tags.
+- Local settings stored in the browser.
+
+Tech stack:
+HTML, CSS, and vanilla JavaScript.
+
+Privacy:
+No history or analytics; only local settings are stored. All generation happens locally.
+
+Contact:
+AiratTop — mail@airat.top

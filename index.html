@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>utm.airat.top | UTM Generator</title>
+    <meta
+      name="description"
+      content="Build UTM campaign links locally in your browser. Private, fast, and offline-ready."
+    />
+    <meta
+      name="keywords"
+      content="utm builder, utm generator, campaign url, marketing links, offline, local, airattop"
+    />
+    <meta name="author" content="AiratTop" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://utm.airat.top/" />
+    <meta property="og:title" content="UTM.airat.top" />
+    <meta
+      property="og:description"
+      content="Build UTM campaign links locally in your browser. Private, fast, and offline-ready."
+    />
+    <meta property="og:image" content="https://utm.airat.top/screenshot.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="UTM.airat.top" />
+    <meta
+      property="twitter:description"
+      content="Build UTM campaign links locally in your browser."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <meta name="msvalidate.01" content="A4ADBC8E0D3C862E117640B06AC788E3" />
+    <meta name="google-site-verification" content="zuHpP1sB8u4uv7gVtMj2RNaGCoxq2lGMYENOCMovy1Y" />
+    <meta name="yandex-verification" content="6d08a6d5c02c329e" />
+    <link rel="canonical" href="https://utm.airat.top/" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-glow" aria-hidden="true"></div>
+
+    <main class="shell">
+      <header class="brand">
+        <div class="brand-copy">
+          <p class="brand-eyebrow">utm.airat.top</p>
+          <h1>UTM Generator</h1>
+          <p class="brand-subtitle">
+            Build campaign URLs with UTM tags locally in your browser. Fast, offline-friendly, and
+            privacy-first — no analytics, no tracking, just clean links.
+          </p>
+        </div>
+        <div class="brand-actions">
+          <button class="repo-link reset-button" id="resetDefaults" type="button">
+            Reset defaults
+          </button>
+          <a
+            class="repo-link"
+            href="https://github.com/AiratTop/utm.airat.top"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub
+          </a>
+        </div>
+      </header>
+
+      <section class="panel is-active" id="panel-utm" aria-label="UTM generator">
+        <div class="output" id="utmOutputWrap">
+          <div class="output-header">
+            <span class="output-title">Generated URL</span>
+            <button class="ghost-button" type="button" id="utmOpen">Open</button>
+          </div>
+          <div
+            class="output-value"
+            id="utmOutput"
+            aria-live="polite"
+            data-placeholder="Your campaign URL will appear here"
+          ></div>
+          <div class="output-meta">
+            <span>
+              UTM tags:
+              <strong id="utmQuery" class="mono">-</strong>
+            </span>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button class="action-button primary" type="button" id="utmCopy">
+            <span class="btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H10V7h9v14Z"
+                />
+              </svg>
+            </span>
+            Copy URL
+          </button>
+          <button class="action-button secondary" type="button" id="utmCopyParams">
+            <span class="btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5h-2v5H5V5h5V3Zm11.71 4.29-4-4A1 1 0 0 0 17 3h-4a1 1 0 0 0 0 2h3.59L20 8.41V12a1 1 0 0 0 2 0V5a1 1 0 0 0-.29-.71Z"
+                />
+              </svg>
+            </span>
+            Copy UTM tags
+          </button>
+        </div>
+        <p class="status" id="utmStatus" role="status"></p>
+
+        <div class="card">
+          <h2>Destination</h2>
+          <label class="field">
+            <span>Page URL</span>
+            <input
+              type="url"
+              id="baseUrl"
+              placeholder="https://example.com/landing"
+              autocomplete="url"
+              inputmode="url"
+            />
+            <small>Existing query parameters are preserved when enabled.</small>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="keepQuery" checked />
+            <span>Keep existing query parameters</span>
+          </label>
+        </div>
+
+        <div class="card">
+          <h2>UTM parameters</h2>
+          <div class="grid">
+            <label class="field">
+              <span>UTM Source</span>
+              <input type="text" id="utmSource" placeholder="newsletter" />
+            </label>
+            <label class="field">
+              <span>UTM Medium</span>
+              <input type="text" id="utmMedium" placeholder="email" />
+            </label>
+            <label class="field">
+              <span>UTM Campaign</span>
+              <input type="text" id="utmCampaign" placeholder="spring_launch" />
+            </label>
+          </div>
+          <div class="grid">
+            <label class="field">
+              <span>UTM Term</span>
+              <input type="text" id="utmTerm" placeholder="keyword" />
+            </label>
+            <label class="field">
+              <span>UTM Content</span>
+              <input type="text" id="utmContent" placeholder="banner_a" />
+            </label>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="lowercaseValues" checked />
+            <span>Lowercase values</span>
+          </label>
+          <small>UTM Source, Medium, and Campaign are required.</small>
+          <p class="status" id="utmError" role="status"></p>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
