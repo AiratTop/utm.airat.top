@@ -124,9 +124,8 @@
         <p class="status" id="utmStatus" role="status"></p>
 
         <div class="card">
-          <h2>Destination</h2>
+          <h2>Page URL</h2>
           <label class="field">
-            <span>Page URL</span>
             <input
               type="url"
               id="baseUrl"
@@ -134,7 +133,6 @@
               autocomplete="url"
               inputmode="url"
             />
-            <small>Existing query parameters are preserved when enabled.</small>
           </label>
           <label class="toggle">
             <input type="checkbox" id="keepQuery" checked />
@@ -178,7 +176,6 @@
                 Partner
               </button>
             </div>
-            <small>Prefill values for popular platforms.</small>
           </div>
           <div class="grid">
             <label class="field">
@@ -204,11 +201,17 @@
               <input type="text" id="utmContent" placeholder="banner_a" />
             </label>
           </div>
-          <label class="toggle">
-            <input type="checkbox" id="lowercaseValues" checked />
-            <span>Lowercase values</span>
-          </label>
-          <small>UTM Source, Medium, and Campaign are required.</small>
+          <div class="toggle-row">
+            <label class="toggle">
+              <input type="checkbox" id="lowercaseValues" checked />
+              <span>Lowercase values</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="encodeValues" checked />
+              <span>Encode special characters</span>
+            </label>
+          </div>
+          <small>UTM Source and Medium are required.</small>
           <p class="status" id="utmError" role="status"></p>
         </div>
       </section>

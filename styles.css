@@ -230,6 +230,7 @@ h1 {
   border: 1px solid var(--border);
   border-radius: 18px;
   box-shadow: var(--shadow);
+  min-width: 0;
 }
 
 .output-header {
@@ -251,6 +252,7 @@ h1 {
   font-family: "JetBrains Mono", "SFMono-Regular", monospace;
   font-size: clamp(18px, 2.6vw, 24px);
   word-break: break-all;
+  overflow-wrap: anywhere;
   padding: 8px 0;
   cursor: pointer;
   text-align: center;
@@ -280,6 +282,13 @@ h1 {
   color: var(--muted);
   border-top: 1px solid var(--border);
   padding-top: 12px;
+  min-width: 0;
+}
+
+.output-meta span {
+  min-width: 0;
+  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
 .strength {
@@ -398,6 +407,8 @@ h1 {
 .mono {
   font-family: "JetBrains Mono", "SFMono-Regular", monospace;
   font-weight: 600;
+  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
 .card {
@@ -592,6 +603,13 @@ input[type="checkbox"] {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.toggle-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  align-items: center;
 }
 
 .output-value::selection {

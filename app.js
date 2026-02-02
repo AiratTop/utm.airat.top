@@ -16,6 +16,7 @@ const ui = {
   utmTerm: document.querySelector("#utmTerm"),
   utmContent: document.querySelector("#utmContent"),
   lowercaseValues: document.querySelector("#lowercaseValues"),
+  encodeValues: document.querySelector("#encodeValues"),
   presetButtons: Array.from(document.querySelectorAll(".preset-button")),
 };
 
@@ -34,6 +35,7 @@ const DEFAULTS = {
   content: "",
   keepQuery: true,
   lowercase: true,
+  encode: true,
   preset: "custom",
 };
 
@@ -191,6 +193,7 @@ function normalizeSettings(raw) {
     content: typeof safe.content === "string" ? safe.content : DEFAULTS.content,
     keepQuery: typeof safe.keepQuery === "boolean" ? safe.keepQuery : DEFAULTS.keepQuery,
     lowercase: typeof safe.lowercase === "boolean" ? safe.lowercase : DEFAULTS.lowercase,
+    encode: typeof safe.encode === "boolean" ? safe.encode : DEFAULTS.encode,
     preset: presetKey,
   };
 }
@@ -226,6 +229,7 @@ function applySettings(settings) {
   ui.utmContent.value = normalized.content;
   ui.keepQuery.checked = normalized.keepQuery;
   ui.lowercaseValues.checked = normalized.lowercase;
+  ui.encodeValues.checked = normalized.encode;
   setActivePreset(normalized.preset);
 }
 
@@ -239,6 +243,7 @@ function getCurrentSettings() {
     content: ui.utmContent.value,
     keepQuery: ui.keepQuery.checked,
     lowercase: ui.lowercaseValues.checked,
+    encode: ui.encodeValues.checked,
     preset: getActivePreset(),
   };
 }
@@ -294,6 +299,28 @@ function sanitizeValue(value, lowercase) {
   return lowercase ? trimmed.toLowerCase() : trimmed;
 }
 
+function safeDecodeURI(value) {
+  if (!value) {
+    return value;
+  }
+  try {
+    return decodeURI(value);
+  } catch (error) {
+    return value;
+  }
+}
+
+function safeDecodeURIComponent(value) {
+  if (!value) {
+    return value;
+  }
+  try {
+    return decodeURIComponent(value);
+  } catch (error) {
+    return value;
+  }
+}
+
 function parseBaseUrl(value) {
   const trimmed = value.trim();
   if (!trimmed) {
@@ -346,9 +373,6 @@ function buildUtmUrl() {
   if (!values.utm_medium) {
     missing.push("utm_medium");
   }
-  if (!values.utm_campaign) {
-    missing.push("utm_campaign");
-  }
 
   if (!url) {
     return {
@@ -393,6 +417,9 @@ function updateOutputFit(value) {
 
 function updateOutput() {
   const { fullUrl, utmQuery, error, missing } = buildUtmUrl();
+  const encode = ui.encodeValues.checked;
+  const displayUrl = encode ? fullUrl : safeDecodeURI(fullUrl);
+  const displayQuery = encode ? utmQuery : safeDecodeURIComponent(utmQuery);
   const hasRequired = missing.length === 0;
 
   let errorMessage = error;
@@ -401,10 +428,10 @@ function updateOutput() {
   }
 
   ui.error.textContent = errorMessage;
-  ui.output.textContent = fullUrl;
-  ui.outputQuery.textContent = utmQuery ? `?${utmQuery}` : "-";
+  ui.output.textContent = displayUrl;
+  ui.outputQuery.textContent = displayQuery ? `?${displayQuery}` : "-";
 
-  updateOutputFit(fullUrl);
+  updateOutputFit(displayUrl);
 
   const urlReady = !error && hasRequired && Boolean(fullUrl);
   const paramsReady = hasRequired && Boolean(utmQuery);
@@ -419,7 +446,9 @@ function handleCopyUrl() {
     setStatus(ui.status, "Fill in the required fields first.");
     return;
   }
-  copyText(fullUrl, ui.status, "URL");
+  const encode = ui.encodeValues.checked;
+  const output = encode ? fullUrl : safeDecodeURI(fullUrl);
+  copyText(output, ui.status, "URL");
 }
 
 function handleCopyParams() {
@@ -432,7 +461,9 @@ function handleCopyParams() {
     setStatus(ui.status, "Add UTM values first.");
     return;
   }
-  copyText(`?${utmQuery}`, ui.status, "UTM tags");
+  const encode = ui.encodeValues.checked;
+  const output = encode ? utmQuery : safeDecodeURIComponent(utmQuery);
+  copyText(`?${output}`, ui.status, "UTM tags");
 }
 
 function handleOpenUrl() {
@@ -475,6 +506,7 @@ function bindEvents() {
     ui.utmContent,
     ui.keepQuery,
     ui.lowercaseValues,
+    ui.encodeValues,
   ];
 
   inputs.forEach((input) => {
