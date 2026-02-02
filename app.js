@@ -17,6 +17,7 @@ const ui = {
   utmContent: document.querySelector("#utmContent"),
   lowercaseValues: document.querySelector("#lowercaseValues"),
   encodeValues: document.querySelector("#encodeValues"),
+  spaceAsPlus: document.querySelector("#spaceAsPlus"),
   presetButtons: Array.from(document.querySelectorAll(".preset-button")),
 };
 
@@ -36,6 +37,7 @@ const DEFAULTS = {
   keepQuery: true,
   lowercase: true,
   encode: true,
+  spaceAsPlus: true,
   preset: "custom",
 };
 
@@ -194,6 +196,7 @@ function normalizeSettings(raw) {
     keepQuery: typeof safe.keepQuery === "boolean" ? safe.keepQuery : DEFAULTS.keepQuery,
     lowercase: typeof safe.lowercase === "boolean" ? safe.lowercase : DEFAULTS.lowercase,
     encode: typeof safe.encode === "boolean" ? safe.encode : DEFAULTS.encode,
+    spaceAsPlus: typeof safe.spaceAsPlus === "boolean" ? safe.spaceAsPlus : DEFAULTS.spaceAsPlus,
     preset: presetKey,
   };
 }
@@ -230,6 +233,7 @@ function applySettings(settings) {
   ui.keepQuery.checked = normalized.keepQuery;
   ui.lowercaseValues.checked = normalized.lowercase;
   ui.encodeValues.checked = normalized.encode;
+  ui.spaceAsPlus.checked = normalized.spaceAsPlus;
   setActivePreset(normalized.preset);
 }
 
@@ -244,6 +248,7 @@ function getCurrentSettings() {
     keepQuery: ui.keepQuery.checked,
     lowercase: ui.lowercaseValues.checked,
     encode: ui.encodeValues.checked,
+    spaceAsPlus: ui.spaceAsPlus.checked,
     preset: getActivePreset(),
   };
 }
@@ -318,6 +323,56 @@ function safeDecodeURIComponent(value) {
     return decodeURIComponent(value);
   } catch (error) {
     return value;
+  }
+}
+
+function applySpaceEncodingToQuery(value, usePlus) {
+  if (!value || usePlus) {
+    return value;
+  }
+  return value.replace(/\+/g, "%20");
+}
+
+function applySpaceEncodingToUrl(value, usePlus) {
+  if (!value || usePlus) {
+    return value;
+  }
+  const hashIndex = value.indexOf("#");
+  const hash = hashIndex >= 0 ? value.slice(hashIndex) : "";
+  const base = hashIndex >= 0 ? value.slice(0, hashIndex) : value;
+  const queryIndex = base.indexOf("?");
+  if (queryIndex === -1) {
+    return value;
+  }
+  const path = base.slice(0, queryIndex);
+  const query = base.slice(queryIndex + 1);
+  return `${path}?${applySpaceEncodingToQuery(query, false)}${hash}`;
+}
+
+function renderHighlightedUrl(text) {
+  ui.output.textContent = "";
+  if (!text) {
+    return;
+  }
+  const regex = /utm_[a-z0-9_]+(?==)/gi;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    const before = text.slice(lastIndex, match.index);
+    if (before) {
+      ui.output.append(document.createTextNode(before));
+    }
+    const span = document.createElement("span");
+    span.className = "utm-highlight";
+    span.textContent = match[0];
+    ui.output.append(span);
+    lastIndex = match.index + match[0].length;
+  }
+
+  const rest = text.slice(lastIndex);
+  if (rest) {
+    ui.output.append(document.createTextNode(rest));
   }
 }
 
@@ -418,8 +473,11 @@ function updateOutputFit(value) {
 function updateOutput() {
   const { fullUrl, utmQuery, error, missing } = buildUtmUrl();
   const encode = ui.encodeValues.checked;
-  const displayUrl = encode ? fullUrl : safeDecodeURI(fullUrl);
-  const displayQuery = encode ? utmQuery : safeDecodeURIComponent(utmQuery);
+  const usePlus = ui.spaceAsPlus.checked;
+  const encodedUrl = applySpaceEncodingToUrl(fullUrl, usePlus);
+  const encodedQuery = applySpaceEncodingToQuery(utmQuery, usePlus);
+  const displayUrl = encode ? encodedUrl : safeDecodeURI(fullUrl);
+  const displayQuery = encode ? encodedQuery : safeDecodeURIComponent(utmQuery);
   const hasRequired = missing.length === 0;
 
   let errorMessage = error;
@@ -428,7 +486,7 @@ function updateOutput() {
   }
 
   ui.error.textContent = errorMessage;
-  ui.output.textContent = displayUrl;
+  renderHighlightedUrl(displayUrl);
   ui.outputQuery.textContent = displayQuery ? `?${displayQuery}` : "-";
 
   updateOutputFit(displayUrl);
@@ -447,7 +505,8 @@ function handleCopyUrl() {
     return;
   }
   const encode = ui.encodeValues.checked;
-  const output = encode ? fullUrl : safeDecodeURI(fullUrl);
+  const usePlus = ui.spaceAsPlus.checked;
+  const output = encode ? applySpaceEncodingToUrl(fullUrl, usePlus) : safeDecodeURI(fullUrl);
   copyText(output, ui.status, "URL");
 }
 
@@ -462,7 +521,8 @@ function handleCopyParams() {
     return;
   }
   const encode = ui.encodeValues.checked;
-  const output = encode ? utmQuery : safeDecodeURIComponent(utmQuery);
+  const usePlus = ui.spaceAsPlus.checked;
+  const output = encode ? applySpaceEncodingToQuery(utmQuery, usePlus) : safeDecodeURIComponent(utmQuery);
   copyText(`?${output}`, ui.status, "UTM tags");
 }
 
@@ -472,7 +532,9 @@ function handleOpenUrl() {
     setStatus(ui.status, "Fill in the required fields first.");
     return;
   }
-  window.open(fullUrl, "_blank", "noopener,noreferrer");
+  const usePlus = ui.spaceAsPlus.checked;
+  const output = applySpaceEncodingToUrl(fullUrl, usePlus);
+  window.open(output, "_blank", "noopener,noreferrer");
 }
 
 function resetDefaults() {
@@ -507,6 +569,7 @@ function bindEvents() {
     ui.keepQuery,
     ui.lowercaseValues,
     ui.encodeValues,
+    ui.spaceAsPlus,
   ];
 
   inputs.forEach((input) => {

@@ -411,6 +411,20 @@ h1 {
   overflow-wrap: anywhere;
 }
 
+.utm-highlight {
+  color: var(--accent);
+  font-weight: 600;
+  background: rgba(58, 134, 255, 0.16);
+  padding: 0 2px;
+  border-radius: 6px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .utm-highlight {
+    background: rgba(97, 168, 255, 0.18);
+  }
+}
+
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
