@@ -415,6 +415,53 @@ h1 {
   font-size: 18px;
 }
 
+.preset-block {
+  display: grid;
+  gap: 10px;
+}
+
+.preset-label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.preset-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.preset-button {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.preset-button:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.preset-button.is-active {
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 10px 24px rgba(31, 111, 139, 0.25);
+}
+
+.preset-button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
 .field {
   display: grid;
   gap: 6px;

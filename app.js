@@ -16,6 +16,7 @@ const ui = {
   utmTerm: document.querySelector("#utmTerm"),
   utmContent: document.querySelector("#utmContent"),
   lowercaseValues: document.querySelector("#lowercaseValues"),
+  presetButtons: Array.from(document.querySelectorAll(".preset-button")),
 };
 
 const state = {
@@ -33,6 +34,104 @@ const DEFAULTS = {
   content: "",
   keepQuery: true,
   lowercase: true,
+  preset: "custom",
+};
+
+const PRESETS = {
+  custom: {
+    label: "Custom",
+    values: null,
+  },
+  yandex: {
+    label: "Yandex Direct",
+    values: {
+      source: "yandex",
+      medium: "cpc",
+      campaign: "{campaign_id}",
+      term: "{keyword}",
+      content: "{ad_id}",
+    },
+  },
+  google: {
+    label: "Google Ads",
+    values: {
+      source: "google",
+      medium: "cpc",
+      campaign: "{network}",
+      term: "{keyword}",
+      content: "{creative}",
+    },
+  },
+  vk: {
+    label: "VK Ads",
+    values: {
+      source: "vk",
+      medium: "cpc",
+      campaign: "{campaign_id}",
+      term: "{keyword}",
+      content: "{ad_id}",
+    },
+  },
+  email: {
+    label: "Email",
+    values: {
+      source: "newsletter",
+      medium: "email",
+      campaign: "welcome_series",
+      term: "",
+      content: "button",
+    },
+  },
+  banner: {
+    label: "Banner",
+    values: {
+      source: "display",
+      medium: "banner",
+      campaign: "brand_awareness",
+      term: "",
+      content: "{banner_id}",
+    },
+  },
+  youtube: {
+    label: "YouTube",
+    values: {
+      source: "youtube",
+      medium: "cpc",
+      campaign: "{campaign_id}",
+      term: "{keyword}",
+      content: "{video_id}",
+    },
+  },
+  telegram: {
+    label: "Telegram",
+    values: {
+      source: "telegram",
+      medium: "cpc",
+      campaign: "{campaign_id}",
+      term: "{keyword}",
+      content: "{ad_id}",
+    },
+  },
+  social: {
+    label: "Social",
+    values: {
+      source: "social",
+      medium: "organic",
+      campaign: "post",
+      term: "",
+      content: "{post_id}",
+    },
+  },
+  partner: {
+    label: "Partner",
+    values: {
+      source: "partner",
+      medium: "referral",
+      campaign: "partner_name",
+      term: "",
+      content: "placement",
+    },
+  },
 };
 
 function setStatus(target, message) {
@@ -81,6 +180,8 @@ function copyText(text, statusNode, label) {
 
 function normalizeSettings(raw) {
   const safe = raw && typeof raw === "object" ? raw : {};
+  const preset = typeof safe.preset === "string" ? safe.preset : DEFAULTS.preset;
+  const presetKey = PRESETS[preset] ? preset : DEFAULTS.preset;
   return {
     baseUrl: typeof safe.baseUrl === "string" ? safe.baseUrl : DEFAULTS.baseUrl,
     source: typeof safe.source === "string" ? safe.source : DEFAULTS.source,
@@ -90,6 +191,7 @@ function normalizeSettings(raw) {
     content: typeof safe.content === "string" ? safe.content : DEFAULTS.content,
     keepQuery: typeof safe.keepQuery === "boolean" ? safe.keepQuery : DEFAULTS.keepQuery,
     lowercase: typeof safe.lowercase === "boolean" ? safe.lowercase : DEFAULTS.lowercase,
+    preset: presetKey,
   };
 }
 
@@ -124,6 +226,7 @@ function applySettings(settings) {
   ui.utmContent.value = normalized.content;
   ui.keepQuery.checked = normalized.keepQuery;
   ui.lowercaseValues.checked = normalized.lowercase;
+  setActivePreset(normalized.preset);
 }
 
 function getCurrentSettings() {
@@ -136,11 +239,51 @@ function getCurrentSettings() {
     content: ui.utmContent.value,
     keepQuery: ui.keepQuery.checked,
     lowercase: ui.lowercaseValues.checked,
+    preset: getActivePreset(),
   };
 }
 
 function storeSettings() {
   setStoredSettings(getCurrentSettings());
+}
+
+function setActivePreset(key) {
+  ui.presetButtons.forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.preset === key);
+  });
+}
+
+function getActivePreset() {
+  const active = ui.presetButtons.find((button) => button.classList.contains("is-active"));
+  return active ? active.dataset.preset : DEFAULTS.preset;
+}
+
+function applyPreset(key) {
+  const preset = PRESETS[key];
+  if (!preset) {
+    return;
+  }
+  setActivePreset(key);
+  if (!preset.values) {
+    storeSettings();
+    updateOutput();
+    return;
+  }
+
+  ui.utmSource.value = preset.values.source;
+  ui.utmMedium.value = preset.values.medium;
+  ui.utmCampaign.value = preset.values.campaign;
+  ui.utmTerm.value = preset.values.term;
+  ui.utmContent.value = preset.values.content;
+
+  storeSettings();
+  updateOutput();
+}
+
+function markCustomPreset() {
+  if (getActivePreset() !== "custom") {
+    setActivePreset("custom");
+  }
 }
 
 function sanitizeValue(value, lowercase) {
@@ -336,8 +479,23 @@ function bindEvents() {
 
   inputs.forEach((input) => {
     input.addEventListener("input", () => {
+      if (
+        input === ui.utmSource ||
+        input === ui.utmMedium ||
+        input === ui.utmCampaign ||
+        input === ui.utmTerm ||
+        input === ui.utmContent
+      ) {
+        markCustomPreset();
+      }
       updateOutput();
       storeSettings();
+    });
+  });
+
+  ui.presetButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      applyPreset(button.dataset.preset);
     });
   });
 }

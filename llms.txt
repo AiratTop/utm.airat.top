@@ -9,6 +9,7 @@ https://utm.airat.top
 Key features:
 - Builds full URLs with utm_source, utm_medium, utm_campaign, utm_term, and utm_content.
 - Optional preservation of existing query parameters.
+- Presets for popular platforms (Yandex, Google, VK, YouTube, Telegram, Social, Partner, Email, Banner).
 - One-click copy for full URLs or only UTM tags.
 - Local settings stored in the browser.
 

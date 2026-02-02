@@ -13,6 +13,7 @@ Live site: https://utm.airat.top
 - Fully local generation; no data ever leaves the browser.
 - Stores only local settings (no analytics, no tracking).
 - One-click copy for full URLs and UTM tags.
+- Presets for popular platforms (Yandex, Google, VK, YouTube, Telegram, Social, Partner, Email, Banner).
 - Mobile-first layout that scales to desktop.
 - Offline-friendly static files for easy hosting.
 
