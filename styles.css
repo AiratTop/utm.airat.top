@@ -631,6 +631,12 @@ input[type="checkbox"] {
   color: #ffffff;
 }
 
+.doc-footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
 @media (max-width: 720px) {
   body {
     padding: 32px 16px 48px;
