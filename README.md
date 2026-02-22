@@ -2,7 +2,7 @@
 
 [![utm.airat.top](https://repository-images.githubusercontent.com/1148110416/0906ee16-28d3-45ef-a6a7-7ca976063d52)](https://utm.airat.top/)
 
-[![utm.airat.top](https://raw.githubusercontent.com/AiratTop/utm.airat.top/main/screenshot.png)](https://utm.airat.top/)
+[![utm.airat.top](https://raw.githubusercontent.com/AiratTop/utm.airat.top/main/public_html/screenshot.png)](https://utm.airat.top/)
 
 Static, privacy-first UTM generator for building campaign URLs directly in the browser.
 
