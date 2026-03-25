@@ -7,6 +7,7 @@
 Static, privacy-first UTM generator for building campaign URLs directly in the browser.
 
 Live site: https://utm.airat.top
+Status page: https://status.airat.top
 
 ## Advantages
 
