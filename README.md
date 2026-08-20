@@ -4,7 +4,7 @@
 
 [![utm.airat.top](https://raw.githubusercontent.com/AiratTop/utm.airat.top/main/public_html/screenshot.png)](https://utm.airat.top/)
 
-Static, privacy-first UTM generator for building campaign URLs directly in the browser.
+Static, privacy-first UTM generator for building campaign URLs directly in the browser. Deployed as static assets on Cloudflare Workers.
 
 - Live site: https://utm.airat.top
 - Status page: https://status.airat.top
@@ -20,9 +20,14 @@ Static, privacy-first UTM generator for building campaign URLs directly in the b
 
 ## What is inside
 
-- `index.html` — layout and metadata.
-- `styles.css` — theme, layout, and animations.
-- `app.js` — generator logic and UI wiring.
+- `public_html/index.html` — layout and metadata.
+- `public_html/styles.css` — theme, layout, and animations.
+- `public_html/app.js` — generator logic and UI wiring.
+- `wrangler.jsonc` — Cloudflare Worker and static asset configuration.
+
+## Deployment
+
+Cloudflare Workers Builds deploys the contents of `public_html` as static assets. The project has no build step; deployment uses `npx wrangler deploy` with the settings in `wrangler.jsonc`.
 
 ## License
 
