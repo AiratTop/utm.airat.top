@@ -31,13 +31,14 @@ Cloudflare Workers Builds deploys the contents of `public_html` as static assets
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+The original source code, configuration, and documentation in this repository are licensed under
+the [Apache License 2.0](LICENSE), with copyright details in [NOTICE](NOTICE).
 
 ---
 
 ## Author
 
-**AiratTop**
+**AiratTop (Airat Halitov)**
 
 - Website: [airat.top](https://airat.top)
 - GitHub: [@AiratTop](https://github.com/AiratTop)
